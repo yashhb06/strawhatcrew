@@ -75,21 +75,6 @@ The robot combines **embedded systems (Arduino/ESP32)** with potential **remote 
 
 ---
 
-## 🎯 Team  
-**Strawhat Crew** 🏴‍☠️  
-- Captain: Monkey D. Luffy 🍖  
-- First Mate: Roronoa Zoro ⚔️  
-- Navigator: Nami 🧭  
-- Sniper: Usopp 🎯  
-- Chef: Sanji 🍳  
-- Doctor: Chopper 🐾  
-- Archaeologist: Nico Robin 📚  
-- Shipwright: Franky 🔧  
-- Musician: Brook 🎶  
-- Helmsman: Jinbe 🐟  
-
----
-
 ## 📸 Demo (Optional)  
 Add images or GIFs of your bot here when you test it.  
 
