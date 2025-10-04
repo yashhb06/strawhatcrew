@@ -1,0 +1,27 @@
+{
+  "name": "firebot-bluetooth-bridge",
+  "version": "1.0.0",
+  "description": "Local Bluetooth Bridge Server for FireBot Robot Control",
+  "main": "bluetooth_bridge.js",
+  "scripts": {
+    "start": "node bluetooth_bridge.js",
+    "dev": "nodemon bluetooth_bridge.js"
+  },
+  "keywords": [
+    "bluetooth",
+    "esp32",
+    "robot",
+    "firebot"
+  ],
+  "author": "Strawhat Crew",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "cors": "^2.8.5",
+    "serialport": "^12.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

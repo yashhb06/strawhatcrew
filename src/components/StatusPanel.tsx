@@ -1,6 +1,10 @@
 import React from 'react';
-import { Flame, Droplet, AlertTriangle, CheckCircle } from 'lucide-react';
-import type { SensorData } from '../services/bluetoothService';
+import { Flame, Droplet } from 'lucide-react';
+
+interface SensorData {
+  fireDetected: boolean;
+  pumpStatus: boolean;
+}
 
 interface StatusPanelProps {
   sensorData: SensorData;
@@ -9,112 +13,71 @@ interface StatusPanelProps {
 
 export const StatusPanel: React.FC<StatusPanelProps> = ({ sensorData, isConnected }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Status Panel</h2>
-
-      {/* Connection Status */}
-      <div className="mb-6 p-4 rounded-lg bg-gray-50">
-        <div className="flex items-center gap-3">
-          {isConnected ? (
-            <>
-              <CheckCircle className="w-6 h-6 text-green-500" />
-              <div>
-                <p className="font-semibold text-gray-800">Connected</p>
-                <p className="text-sm text-gray-600">Robot is online and ready</p>
-              </div>
-            </>
-          ) : (
-            <>
-              <AlertTriangle className="w-6 h-6 text-orange-500" />
-              <div>
-                <p className="font-semibold text-gray-800">Not Connected</p>
-                <p className="text-sm text-gray-600">Click "Connect to Robot" to start</p>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 animate-fade-in">
+      <h2 className="text-2xl font-bold text-white mb-6">System Status</h2>
 
       {/* Sensor Data */}
       <div className="space-y-4">
         {/* Fire Detection */}
-        <div
-          className={`p-4 rounded-lg border-2 ${
-            sensorData.fireDetected
-              ? 'bg-red-50 border-red-500'
-              : 'bg-green-50 border-green-500'
-          }`}
-        >
+        <div className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 animate-fade-in ${
+          !sensorData.fireDetected 
+            ? 'bg-gradient-to-br from-green-900/40 to-green-800/20 border-green-500/50 shadow-lg shadow-green-500/30' 
+            : 'bg-gradient-to-br from-slate-800/80 to-slate-900/60 border-slate-700 hover:border-green-500/30'
+        }`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Flame
-                className={`w-8 h-8 ${
-                  sensorData.fireDetected ? 'text-red-500' : 'text-green-500'
-                }`}
-              />
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-xl transition-all duration-300 ${
+                !sensorData.fireDetected ? 'bg-green-500/30 animate-pulse' : 'bg-slate-700/50'
+              }`}>
+                <Flame className={`w-8 h-8 transition-all duration-300 ${
+                  !sensorData.fireDetected ? 'text-green-400 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]' : 'text-slate-400'
+                }`} />
+              </div>
               <div>
-                <p className="font-bold text-gray-800">Fire Detection</p>
-                <p className="text-sm text-gray-600">
-                  {sensorData.fireDetected ? '🔥 Fire Detected!' : '✅ Safe'}
-                </p>
+                <p className="text-base font-semibold text-white">Fire Detection</p>
+                <p className="text-sm text-slate-400 mt-1">Environmental sensor</p>
               </div>
             </div>
-            <div
-              className={`px-3 py-1 rounded-full text-sm font-bold ${
-                sensorData.fireDetected
-                  ? 'bg-red-500 text-white'
-                  : 'bg-green-500 text-white'
-              }`}
-            >
-              {sensorData.fireDetected ? 'ALERT' : 'CLEAR'}
+            <div className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
+              !sensorData.fireDetected
+                ? 'bg-green-500/30 text-green-300 border-2 border-green-400/50 shadow-lg shadow-green-500/30'
+                : 'bg-slate-700/50 text-slate-300 border-2 border-slate-600'
+            }`}>
+              {!sensorData.fireDetected ? 'Safe' : 'Safe'}
             </div>
           </div>
         </div>
 
         {/* Pump Status */}
-        <div
-          className={`p-4 rounded-lg border-2 ${
-            sensorData.pumpStatus
-              ? 'bg-green-50 border-green-500'
-              : 'bg-gray-50 border-gray-300'
-          }`}
-        >
+        <div className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 animate-fade-in ${
+          sensorData.pumpStatus 
+            ? 'bg-gradient-to-br from-cyan-900/40 to-cyan-800/20 border-cyan-500/50 shadow-lg shadow-cyan-500/30' 
+            : 'bg-gradient-to-br from-slate-800/80 to-slate-900/60 border-slate-700 hover:border-cyan-500/30'
+        }`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Droplet
-                className={`w-8 h-8 ${
-                  sensorData.pumpStatus ? 'text-green-500' : 'text-gray-400'
-                }`}
-              />
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-xl transition-all duration-300 ${
+                sensorData.pumpStatus ? 'bg-cyan-500/30 animate-pulse' : 'bg-slate-700/50'
+              }`}>
+                <Droplet className={`w-8 h-8 transition-all duration-300 ${
+                  sensorData.pumpStatus ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'text-slate-400'
+                }`} />
+              </div>
               <div>
-                <p className="font-bold text-gray-800">Water Pump</p>
-                <p className="text-sm text-gray-600">
-                  {sensorData.pumpStatus ? 'Active' : 'Inactive'}
-                </p>
+                <p className="text-base font-semibold text-white">Water Pump</p>
+                <p className="text-sm text-slate-400 mt-1">Extinguisher system</p>
               </div>
             </div>
-            <div
-              className={`px-3 py-1 rounded-full text-sm font-bold ${
-                sensorData.pumpStatus
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-300 text-gray-600'
-              }`}
-            >
-              {sensorData.pumpStatus ? 'ON' : 'OFF'}
+            <div className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
+              sensorData.pumpStatus
+                ? 'bg-cyan-500/30 text-cyan-300 border-2 border-cyan-400/50 shadow-lg shadow-cyan-500/30'
+                : 'bg-slate-700/50 text-slate-300 border-2 border-slate-600'
+            }`}>
+              {sensorData.pumpStatus ? 'Active' : 'Standby'}
             </div>
           </div>
         </div>
       </div>
-
-      {/* Info Box */}
-      {!isConnected && (
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>Note:</strong> Sensor data will update in real-time once connected to the
-            robot. Currently showing simulated data.
-          </p>
-        </div>
-      )}
     </div>
   );
 };

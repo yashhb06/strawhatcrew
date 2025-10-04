@@ -18,6 +18,7 @@ export const COMMANDS = {
   STOP: 'S',
   PUMP_ON: 'P1',
   PUMP_OFF: 'P0',
+  EXTINGUISH: 'EXTINGUISH', // Autonomous fire extinguishing mode
 } as const;
 
 export type Command = typeof COMMANDS[keyof typeof COMMANDS];

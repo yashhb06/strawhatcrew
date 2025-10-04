@@ -1,6 +1,13 @@
 # 🔥 Fire Extinguishing Robot – IoT Project  
 **Team:** 🏴‍☠️ Strawhat Crew  
 
+## 🔥 FireBot Controller
+
+A complete React-based control system for an IoT Fire Extinguishing Robot with full integration:
+- **React Web App** → Bluetooth (BLE) → **ESP32** → I²C → **Arduino Uno** → Motors/Sensors/Pump
+
+Control your fire-fighting robot through a modern web interface with real-time sensor feedback!
+
 ## 📌 Project Overview  
 This project is an **IoT-based Fire Extinguishing Robot** designed to detect and extinguish fire automatically. The robot uses **flame sensors**, **servo motor**, and a **water pump system** mounted on a moving chassis. It can:  
 - Detect fire using flame sensors  
@@ -72,6 +79,65 @@ The robot combines **embedded systems (Arduino/ESP32)** with potential **remote 
 - 📡 IoT integration with **Firebase/MQTT** to log fire detection events.  
 - 🎥 Adding camera module for **live video streaming**.  
 - 🧠 AI-based fire detection with **Computer Vision**.  
+
+---
+
+## 🔗 I²C Integration Architecture
+
+This project uses a **three-tier architecture** for complete separation of concerns:
+
+```
+React Web App (UI)
+      ↓ Bluetooth (BLE)
+ESP32 (Communication Bridge)
+      ↓ I²C (SDA/SCL)
+Arduino Uno (Motor Controller)
+      ↓ GPIO
+Motors, Sensors, Pump
+```
+
+### Why This Architecture?
+
+1. **ESP32** handles wireless communication (BLE) - it has built-in Bluetooth
+2. **Arduino Uno** handles real-time motor control and sensor reading
+3. **I²C** provides reliable, fast communication between the two microcontrollers
+4. **React App** provides a modern, responsive user interface
+
+### Key Files
+
+- **`arduino_uno_firebot_slave.ino`** - Arduino code (I²C slave, motor control)
+- **`esp32_firebot_i2c_bridge.ino`** - ESP32 code (BLE + I²C master)
+- **`src/`** - React web application
+- **`I2C_INTEGRATION_GUIDE.md`** - Complete setup instructions
+- **`WIRING_DIAGRAM.md`** - Detailed wiring guide
+
+### Quick Start
+
+1. **Upload Arduino Code**: Flash `arduino_uno_firebot_slave.ino` to Arduino Uno
+2. **Upload ESP32 Code**: Flash `esp32_firebot_i2c_bridge.ino` to ESP32
+3. **Wire I²C Connection**: 
+   - ESP32 GPIO 21 → Arduino A4 (SDA)
+   - ESP32 GPIO 22 → Arduino A5 (SCL)
+   - Common Ground (CRITICAL!)
+4. **Start React App**: `npm install && npm run dev`
+5. **Connect**: Open browser, click "Connect to Robot"
+
+📖 **See `I2C_INTEGRATION_GUIDE.md` for complete setup instructions**
+
+---
+
+## 🎯 Team  
+**Strawhat Crew** 🏴‍☠️  
+- Captain: Monkey D. Luffy 🍖  
+- First Mate: Roronoa Zoro ⚔️  
+- Navigator: Nami 🧭  
+- Sniper: Usopp 🎯  
+- Chef: Sanji 🍳  
+- Doctor: Chopper 🐾  
+- Archaeologist: Nico Robin 📚  
+- Shipwright: Franky 🔧  
+- Musician: Brook 🎶  
+- Helmsman: Jinbe 🐟  
 
 ---
 

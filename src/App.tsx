@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { ControlPanel } from './components/ControlPanel';
 import { StatusPanel } from './components/StatusPanel';
-import { bluetoothService, type SensorData } from './services/bluetoothService';
+import { localServerService, type SensorData } from './services/localServerService';
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
@@ -28,25 +28,32 @@ function App() {
 
   // Set up sensor data callback
   useEffect(() => {
-    bluetoothService.onSensorData((data: SensorData) => {
+    localServerService.onSensorData((data: SensorData) => {
       setSensorData(data);
+    });
+    
+    localServerService.onConnectionChange((connected: boolean) => {
+      setIsConnected(connected);
     });
   }, []);
 
   const handleConnect = async () => {
     try {
-      await bluetoothService.connect();
+      await localServerService.connect();
       setIsConnected(true);
-      setDeviceName(bluetoothService.getDeviceName());
-    } catch (error) {
-      console.error('Connection error:', error);
-      alert('Failed to connect to FireBot. Make sure Bluetooth is enabled and the robot is nearby.');
+      setDeviceName(localServerService.getDeviceName());
+    } catch (error: any) {
+      // Only show error if user actually attempted to connect (not if they cancelled)
+      if (error?.message && !error.message.includes('User cancelled')) {
+        console.error('Connection error:', error);
+        alert('Failed to connect to FireBot. Make sure Bluetooth is enabled and the robot is nearby.');
+      }
     }
   };
 
   const handleDisconnect = async () => {
     try {
-      await bluetoothService.disconnect();
+      await localServerService.disconnect();
       setIsConnected(false);
       setDeviceName('');
     } catch (error) {
@@ -61,7 +68,7 @@ function App() {
     }
 
     try {
-      await bluetoothService.sendCommand(command);
+      await localServerService.sendCommand(command);
       
       // Update pump status locally for immediate feedback
       if (command === 'P1') {
@@ -76,7 +83,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-slate-950">
       <Header
         isConnected={isConnected}
         deviceName={deviceName}
@@ -94,58 +101,13 @@ function App() {
           <StatusPanel sensorData={sensorData} isConnected={isConnected} />
         </div>
 
-        {/* Instructions */}
-        <div className="mt-8 bg-white rounded-2xl shadow-xl p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">How to Use</h2>
-          <ol className="space-y-2 text-gray-700">
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-orange-600">1.</span>
-              <span>
-                Click <strong>"Connect to Robot"</strong> in the header to pair with your ESP32
-                FireBot via Bluetooth.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-orange-600">2.</span>
-              <span>
-                Use the <strong>arrow buttons</strong> to control movement (Forward, Backward,
-                Left, Right).
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-orange-600">3.</span>
-              <span>
-                Press the <strong>Stop button</strong> (red square) to halt all movement.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-orange-600">4.</span>
-              <span>
-                Toggle the <strong>Pump Control</strong> to activate/deactivate the water pump.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-orange-600">5.</span>
-              <span>
-                Monitor the <strong>Status Panel</strong> for real-time fire detection, obstacle
-                distance, and pump status.
-              </span>
-            </li>
-          </ol>
-
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>⚠️ Important:</strong> This app uses the Web Bluetooth API, which requires
-              HTTPS or localhost. Make sure your browser supports Web Bluetooth (Chrome, Edge, or
-              Opera recommended).
-            </p>
-          </div>
+        {/* Connection Message */}
+        <div className="mt-8 text-center">
+          <p className="text-slate-400 text-sm">
+            Connect to your FireBot to enable controls. Sensor data is simulated when not connected.
+          </p>
         </div>
       </main>
-
-      <footer className="mt-12 py-6 text-center text-gray-600">
-        <p>FireBot Controller v1.0 | Built with React + Web Bluetooth API</p>
-      </footer>
     </div>
   );
 }

@@ -22,6 +22,11 @@ class BluetoothService {
 
   async connect(): Promise<void> {
     try {
+      // Check if Web Bluetooth is available
+      if (!navigator.bluetooth) {
+        throw new Error('Web Bluetooth API is not available in this browser');
+      }
+
       // Request Bluetooth device
       this.device = await navigator.bluetooth.requestDevice({
         filters: [{ namePrefix: DEVICE_NAME_PREFIX }],
@@ -53,9 +58,14 @@ class BluetoothService {
       // Handle disconnection
       this.device.addEventListener('gattserverdisconnected', this.handleDisconnect.bind(this));
 
-      console.log('Connected to FireBot');
-    } catch (error) {
-      console.error('Connection failed:', error);
+      console.log('✅ Connected to FireBot successfully');
+    } catch (error: any) {
+      // Don't log error if user cancelled the pairing dialog
+      if (error.name === 'NotFoundError' || error.message?.includes('User cancelled')) {
+        console.log('Bluetooth pairing cancelled by user');
+      } else {
+        console.error('❌ Bluetooth connection failed:', error.message || error);
+      }
       throw error;
     }
   }
@@ -77,7 +87,7 @@ class BluetoothService {
       const data = encoder.encode(command);
 
       // Determine which characteristic to use
-      if (command === 'P1' || command === 'P0') {
+      if (command === 'P1' || command === 'P0' || command === 'EXTINGUISH') {
         if (!this.pumpCharacteristic) {
           throw new Error('Pump characteristic not available');
         }
